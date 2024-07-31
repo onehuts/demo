@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.demo.dto.RaceRequestDto;
 import com.example.demo.demo.dto.RaceResponseDto;
+import com.example.demo.demo.exception.BusinessException;
+import com.example.demo.demo.exception.ErrorCode;
 
 @Service
 public class RaceService {
@@ -39,10 +41,15 @@ public class RaceService {
     private int findNumber(String[] players, String calling){
         for(int i = 0; i < players.length; i++){
             if(players[i].equals(calling)){
+                // calling이 첫번째 선수인 경우 예외 발생
+                if(i == 0){
+                    throw new BusinessException(ErrorCode.FIRST_PLAYER.getMessage(), ErrorCode.FIRST_PLAYER);
+                }
                 return i;
             }
         }
-        return 0;
+        // calling이 players 명단에 없는 경우 예외 발생
+        throw new BusinessException(ErrorCode.WORNG_PLAYER.getMessage(), ErrorCode.WORNG_PLAYER);
     }
     
     private String[] changeRank(String[] players, int num){
